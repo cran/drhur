@@ -1,0 +1,488 @@
+---
+title: "Dr. Hu's R Workshop"
+output: html_document
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tidyverse)
+library(lubridate)
+library(gapminder)
+```
+
+# Lecture: Playing Around w. R
+
+## Skills
+
+1.  Data creation
+2.  Data input & output
+3.  Data merging & transforming
+
+## Abilities You'll Achieve
+
+1.  Create the data in the most effective and efficient way!
+2.  Input whatever type of data into R
+
+## Before Anything
+
+R is an OOP (objective-oriented programming), remember?
+
+### Create an object
+
+Object is created by a "name" + `<-...`
+
+Naming rules
+
+1.  Don't start with numbers (WRONG: `1stday`)
+2.  No special signs except for `.` and `-` (WRONG: `M&M`)
+3.  Case sensitivity (`X != x`)
+4.  Don't overwrite the build-in functions unless necessary (DON'T: `list <- c(1:5)`)
+
+```{r obejctEg, exercise = TRUE}
+# Creating a legit object
+
+# Try to build an illegal object
+```
+
+### Fun History
+
+-   `=` is not "equals" in R!
+-   `=` is (almost) equivalent to `<-` in R (`<<-` also exists)
+
+<img src='https://raw.githubusercontent.com/sammo3182/drhur/master/inst/tutorials/playing/images/APLkeyBoard.png' width = '60%'>
+
+### Why typing twice?
+Short key: `Alt + -`
+```{r arrow}
+a <- 12
+25 -> b
+```
+
+### When "="?
+
+When you don't want to create an object
+
+```{r sideEffect, exercise = TRUE}
+median(x <-  1:10); x
+# median(x = 1:10); x
+```
+
+## Function
+
+<img src='https://raw.githubusercontent.com/sammo3182/drhur/master/inst/tutorials/playing/images/handShadow.gif' width = '60%'>
+
+```{r funIllustration, eval = FALSE}
+light <- function(finger){
+  {{shadow <- finger + 5}}
+}
+handShadow <- light(finger = 3)
+handShadow
+```
+
+NB: Object can contains everything, no matter data, functions, outcomes, or plots.
+
+## Math
+
+```{r math, exercise = TRUE}
+x <- y <- 42
+
+# basic math
+x + (1 - 2) * 3 / 4
+
+# advanced math
+x^2;sqrt(x);log(x);exp(x)
+
+# matrix algebra
+z <- matrix(1:4, ncol = 2)
+z + z - z
+z %*% z  # inner multiplication
+z %o% z  # outter multiplication
+
+# logical evaluation
+x == y; x != y
+x & y; x | y
+x > y; x <= y
+```
+
+See more about linear algebra in R [here](https://towardsdatascience.com/intro-to-r-linear-algebra-2a4de2506c93).
+
+## Let's Create Some Data
+
+Hey, matrix and its friends!
+
+### Matrix
+
+<img src='https://raw.githubusercontent.com/sammo3182/drhur/master/inst/tutorials/playing/images/matrix.gif' width = '60%'>
+
+Creating matrix in R
+
+```{r matrixR}
+A <- matrix(-8:7, ncol = 4)
+A
+A[2, 3]
+```
+
+### Vector
+
+A one-dimension matrix.
+
+```{r vector, exercise = TRUE}
+A[2,]
+A[,3]
+```
+
+Let's know some common types of it
+
+### Numeric
+
+```{r numeric, exercise = TRUE}
+c(1, 2, 3);c(1:3) # Integer
+c(1.5, -2.34, NA) #Double
+
+# What does c(1.5:3) come out?
+```
+
+Note: 1. `NA`: not available
+
+### Character
+
+```{r character, exercise = TRUE}
+c("R is hard.", "But I can nail it.")
+```
+
+### Logic
+
+```{r logic, exercise = TRUE}
+c(TRUE, TRUE, FALSE)
+
+# c(TRUE, TRUE, FALSE) == c(1, 1, 0)
+```
+
+### Factor
+
+```{r factor, exercise = TRUE}
+factor(c(1, 2, 2, 3), labels = c("Apple", "Pear", "Orange"))
+
+# x == c(1, 2, 2, 3)? 
+```
+
+```{r factor-solution}
+x <- factor(c(1, 2, 2, 3), labels = c("Apple", "Pear", "Orange"))
+levels(x)
+```
+
+### Levels and labels?
+
+```{r level, exercise = TRUE}
+x <- factor(c(1, 2, 2, 3), labels = c("Apple", "Pear", "Orange"))
+levels(x)
+```
+
+```{r level-solution}
+# level change
+
+x2 <- x
+levels(x2) <- c("Pear", "Orange", "Apple")
+levels(x2)
+```
+
+Learn more about `levels`, `labels`, and more sophisticated manipulations in the `?factor` and the [vignette](https://forcats.tidyverse.org/) of the package `forcats`
+
+### Time
+
+`as.POSIXct` vs. `as.POSIXlt`
+
+```{r time, exercise}
+Sys.time()
+
+# The full pack
+time1 <- Sys.time()
+time2 <- as.POSIXlt(Sys.time())
+time2$wday # week of the day
+
+## If I only care about the date?
+```
+
+```{r time-solution}
+Sys.Date()
+date1 <- as.Date("2019-01-02")
+```
+
+## A Glimpse of `lubridate`
+
+### Date recorded in different formats
+
+```{r timeRecord}
+library(lubridate)
+
+ymd("20110604")
+mdy("06-04-2011")
+dmy("04/06/2011")
+```
+
+### Time zone
+
+```{r timeZone, exercise = TRUE}
+time1 <- Sys.time()
+Sys.timezone()
+
+with_tz(time1, tzone = "America/Chicago")
+
+# learn time zone names by `OlsonNames()`
+
+time2 <- force_tz(time1, tzone = "America/Chicago")
+```
+
+### Intervals
+
+```{r intervals, exercise = TRUE}
+start <- ymd("2019-09-09")
+end <- start + weeks(15)
+
+semester <- interval(start, end)
+
+# how many days does the semester have? 
+semester/days(1)
+
+# How about month?
+```
+
+```{r intervals-solution}
+semester/months(1)
+```
+
+## Properties of vectors
+
+1.  What type is a given vector?
+2.  How many elements does it have?
+3.  Does it have missing data?
+4.  Is it a character vector?
+5.  How many unique categories of data does it have? How many elements are in each? ......
+
+```{r property, exercise = TRUE}
+x <- rep(1:5, times = 300)
+```
+
+```{r property-solution}
+class(x)
+length(x)
+is.na(x)
+is.character(x)
+unique(x)
+table(x)
+```
+
+Note: Most of the property function can be used for all types of data in R
+
+## Excel-Like Data
+
+"spreadsheet"
+
+In Excel:
+
+<img src='https://raw.githubusercontent.com/sammo3182/drhur/master/inst/tutorials/playing/images/excel-r1.png' width = '60%'>
+
+In R(studio):
+
+<img src='https://raw.githubusercontent.com/sammo3182/drhur/master/inst/tutorials/playing/images/excel-r2.png' width = '60%'>
+
+## Data Input
+
+### Build-in data
+
+```{r mtcars, exercise}
+data(mtcars)
+#data(gapminder::gapminder)
+```
+
+### R Data
+
+-   `.RDS` (single object)
+-   `.RData` (multiple objects)
+-   `.txt` (tab table)
+-   `.csv`
+
+```{r input, eval = FALSE}
+df_rds <- readRDS("<FileName>.rds")
+df_txt <- read.table("<FileName>.txt")
+df_csv <- read.csv("<FileName>.csv")
+```
+
+```{r eval=FALSE}
+# SPSS, Stata, SAS
+library(haven)
+df_spss <- read_spss("<FileName>.sav")
+df_stata <- read_dta("<FileName>.dta") 
+df_sas <- read_sas("<FileName>.sas7bdat")  
+
+# Excel sheets
+library(readxl)
+df_excel <- read_excel("<FileName>.xls")
+df_excel2 <- read_excel("<FileName>.xlsx") 
+
+# JavaScript Object Notation 
+library(rjson)
+df_json <- fromJSON(file = "<FileName>.json" )
+
+# XML/Html
+df_xml <- xmlTreeParse("<url>")
+df_html <- readHTMLTable(url, which=3)
+
+# Feather
+feather::read_feather("<FileName>.feather")
+```
+
+### If the data hasn't existed
+
+```{r newData, exercise = TRUE}
+df_new <- data.frame(x = 1:3, y = c("x", "y", "z"))
+df_new
+```
+
+## Combining Data
+
+### Toy Data
+
+Demographic statistics popularized by [Hans Rosling's TED talks](https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen?utm_campaign=tedspread--b&utm_medium=referral&utm_source=tedcomshare).
+
+```{r toy, exercise = TRUE}
+library(gapminder)
+gapminder
+```
+
+### Merging Rows
+
+<img src='https://raw.githubusercontent.com/sammo3182/drhur/master/inst/tutorials/playing/images/rowBind.png' width = '95%'>
+
+Q: Assuming we have two separate data for Asia and Europe (how?), how could we combine them into one?
+
+```{r ex_append, exercise = TRUE, exercise.eval = TRUE}
+gapminder_asia <- gapminder[gapminder$continent == "Asia", ]
+gapminder_europe <- gapminder[gapminder$continent == "Europe", ]
+```
+
+```{r ex_append-solution}
+library(dplyr)
+
+gapminder_eurasia <- bind_rows(gapminder_asia, gapminder_europe)
+```
+
+### Merging columns
+
+Q: I have several rows and just want to merge them together
+
+<img src='https://raw.githubusercontent.com/sammo3182/drhur/master/inst/tutorials/playing/images/columnBind.png' width = '95%'>
+
+```{r ex_columnBind, exercise = TRUE}
+gapminder_country <- gapminder$country
+gapminder_year <- gapminder$year
+```
+
+```{r ex_columnBind-solution}
+bind_cols(gapminder_country, gapminder_year)
+```
+
+### Index-based merging
+
+Q: How can I use two datasets jointly?
+
+<img src='https://raw.githubusercontent.com/sammo3182/drhur/master/inst/tutorials/playing/images/join.png' width = '95%'>
+
+```{r ex_join, exercise = TRUE}
+gapminder_country <- select(gapminder, country, year)
+gapminder_year <- select(gapminder, year, pop)
+```
+
+```{r ex_join-solution}
+gapminder_countryYear<- left_join(gapminder_country, gapminder_year)
+```
+
+## Long-Wide Transformation
+
+-   To long: Transfer columns to values of a variable
+-   To wide: Convert values of a rows to columns
+
+```{r pivot}
+library(tidyr)
+
+relig_income # wide
+fish_encounters # long
+```
+
+### To longer
+
+```{r pivotLonger, exercise = TRUE}
+relig_income %>%
+ pivot_longer(-religion, names_to = "income", values_to = "count")
+```
+
+### To wider
+
+```{r pivotWider, exercise = TRUE}
+fish_encounters %>%
+  pivot_wider(names_from = station, values_from = seen)
+```
+
+## Data Output
+
+### Save as R data
+
+```{r saving, eval = FALSE}
+saveRDS(gapminder_country, file = "gapminder_country.rds")
+save(gapminder_country, gapminder_year, file = "gapminder.rdata")
+```
+
+### Save as Python readable data
+
+```{r savingPythong, eval = FALSE}
+feather::write_feather(gapminder, path = "gapminder.feather")
+```
+
+### Save as csv
+
+```{r savingCSV, eval = FALSE}
+write.csv(gapminder_country, file = "gapminder_country.csv")
+```
+
+Hint: Don't open csv file with Excel if you have data in Chinese.
+
+Of course you could save the data in the format of STATA, SPSS, Excel, but...
+
+### Saving Data Decently
+
+STATA (.dta, \<14): 3.16 G = R (.rds): 0.05 G
+
+#### 
+
+| **Method**       | **Average Time** | **Minimum** | **Maximum** |
+|:-----------------|:----------------:|:-----------:|:-----------:|
+| base::readRDS    |       19.65      |    18.64    |    21.01    |
+| fst::read\_fst   |       1.39       |     0.56    |     3.41    |
+| haven::read\_sav |      104.78      |    101.00   |    111.85   |
+| qs::qread        |       3.33       |     3.00    |     4.24    |
+
+: Average Times (with Minimums and Maximums) in Seconds of Four Methods for Reading GSS Data in R
+
+| **Method**      | **Average Time** | **Minimum** | **Maximum** | **File Size** |
+|:----------------|:----------------:|:-----------:|:-----------:|:-------------:|
+| base::saveRDS   |       98.36      |    93.09    |    103.24   |    30.9 MB    |
+| fst::write\_fst |       2.70       |     1.86    |     4.05    |    122.1 MB   |
+| qs::qsave       |       5.03       |     4.35    |     6.62    |    44.6 MB    |
+
+: Average Write Times (and File Size) for GSS Data in R
+
+## Take-Home Points
+
+1.  Keep in mind that R is an **OOP**.
+2.  Think data as matrices.
+3.  Choose the vector type wisely and don't hesitate to change them.
+4.  Columns are variables, and rows are observations ("tidy data").
+
+## Thank you!
+
+<i class="fa fa-envelope fa-lg"></i>  <yuehu@tsinghua.edu.cn>
+
+<i class="fa fa-globe fa-lg"></i>  <https://sammo3182.github.io/>
+
+<i class="fab fa-github fa-lg"></i>  [sammo3182](https://github.com/sammo3182)
