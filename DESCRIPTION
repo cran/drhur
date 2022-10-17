@@ -1,25 +1,25 @@
 Package: drhur
 Type: Package
 Title: Learning R with Dr. Hu
-Version: 0.1.0
-Authors@R: c(person("Yue", "Hu", email = "yuehu@tsinghua.edu.cn", role = c("aut","cre")), person("Yufei", "Sun", email = "sunyf20@mails.tsinghua.edu.cn", role = c("ctb")))
-Description: A fast, interactive tool built upon the 'learnr' function which will open a shiny app for learners to interact with the instructions and tasks. The best way to learn these skills together with the “Learning R with Dr. Hu” online/offline workshops.
+Version: 1.0.0
+Authors@R: c(
+    person("Yue", "Hu", role = c("aut", "cre"), email = "yuehu@tsinghua.edu.cn"),
+    person("Yufei", "Sun", role = c("aut"), email = "sunyf20@mails.tsinghua.edu.cn")
+    )
+Maintainer: Yue Hu <yuehu@tsinghua.edu.cn>
+Description: Tutorials of R learning easily and happily.
 License: MIT + file LICENSE
 VignetteBuilder: knitr
 Encoding: UTF-8
 BugReports: https://github.com/sammo3182/drhur/issues
 LazyData: true
 Depends: R(>= 3.6.0), learnr(>= 0.10.1)
-Imports: gapminder, scales, gt, modelsummary, dotwhisker, interplot,
-        likert, ggthemes, ggeffects, summarytools, knitr, tidyverse,
-        car, arm, nnet, ordinal, moments, tibble, performance,
+RoxygenNote: 7.2.1
+Suggests: rmarkdown, scales, modelsummary, likert, knitr, tidyverse,
         kableExtra
-RoxygenNote: 7.1.1
-Suggests: rmarkdown
 NeedsCompilation: no
-Packaged: 2020-10-22 08:28:42 UTC; sunyufei
+Packaged: 2022-10-17 12:13:21 UTC; sunyufei
 Author: Yue Hu [aut, cre],
-  Yufei Sun [ctb]
-Maintainer: Yue Hu <yuehu@tsinghua.edu.cn>
+  Yufei Sun [aut]
 Repository: CRAN
-Date/Publication: 2020-10-30 09:10:02 UTC
+Date/Publication: 2022-10-17 12:52:33 UTC
