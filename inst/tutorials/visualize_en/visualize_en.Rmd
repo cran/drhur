@@ -1,17 +1,14 @@
 ---
-title: "基础可视化"
+title: "Basic Visualization"
 subtitle: "Learning R with Dr. Hu and His Friends"
-author: "胡悦（清华大学政治学系）"
+author: "Yue Hu (Political Science, Tsinghua University)"
 output: 
   learnr::tutorial:
-    language: "zh"
+    language: "en"
     progressive: true
     allow_skip: true
 runtime: shiny_prerendered
 ---
-
-<!-- 宇飞，请检查编码是否可以运行 -->
-
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,
@@ -20,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE,
                       out.width="100%")
 
 if (!require(pacman)) install.packages("pacman")
-if(!require(ggradar)) devtools::install_github("ricardo-bion/ggradar", dependencies = TRUE)
+if (!require(ggradar)) devtools::install_github("ricardo-bion/ggradar", dependencies = TRUE)
 
 p_load(
   scales,
@@ -35,66 +32,69 @@ wvs7_narm <-
 set.seed(114)
 ```
 
-# 数据可视化
+# Data Visualization
 
-## 知识点
-- 研究问题：
- **经济不平等会带来怎样的社会政治影响呢？** 
-    -  经济不平等会影响受教育水平吗？
-        - 家庭的经济状况是如何影响平均受教育水平的呢？
-        - 家庭是否信仰宗教是否会使家庭的经济状况对平均教育水平的影响发生改变吗？
-    -  经济不平等会影响政治信任吗？
-       - 家庭收入水平怎么影响个体对国家机制（政府、法庭、议会、军队、媒体）的信任呢？
+## Key Points
+- Research Question：
+ **Does economic inequality have social and political consequences?** 
+    -  Does economic inequality affect educational levels?
+        - How does a person's family economic status affect the average level of education?
+        - Does a family's religious belief change the impact of their economic status on the average education level?
+    -  Does economic inequality affect political trust?
+       - How does a person's family income level affect an individual's trust in state institutions (eg, government, courts, parliament, army, media)?
 
-    
 
-- Build-in可视化
+- Build-in Visualization
 - `lattice`
 - `ggplot`
 
-## 演示数据
 
-我们在这部分依旧使用WVS7的一个样本进行演示。
-具体变量信息可通过`?drhur::wvs7`查看。
+## Sample Data
+
+We still use a sample of WVS7 for demonstration in this part.
+Specific variable information can be viewed through `?drhur::wvs7`.
 
 ```{r wvs7}
 library(drhur)
 data("wvs7")
 ```
 
-## 可视化引擎
+## Visualization Engines
 
-在R语言中，可以通过三种引擎实现数据可视化：
+In the R programming language, there are three engines that can be used for data visualization:
 
-- Build-In引擎
-- `lattice`引擎
-- `ggplot2`引擎
+- Build-In Engine
+- `lattice` Engine
+- `ggplot2` Engine
 
-我们下面基于散点图进行演示。
-我们关注的实际问题是：不同年龄层的人群对收入分配的看法是否有所不同。
-对于收入分配的看法，我们采用`wvs7`中的`equalIncentive`来测量。
+We will demonstrate this for scatterplots in the following sections.
 
-## Build-In可视化
+The question we are concerned with is whether people of different age groups have different views on income distribution. 
+We use `equalIncentive` in `wvs7` to measure people's perception of income distribution.
 
-Build-in 可视化引擎是R自带的可视化方式，不用调用任何软件包即可使用，它有以下特点：
 
-**优点**
+## Build-In Visualization
 
-* 不用安装
-* 反应迅速
-* 很多3D和空间视图的基础
+The Build-In visualization engine is a built-in visualization method in R that can be used without calling any software packages. It has the following characteristics:
 
-**缺点**
+**Advantages**
 
-* 不精致
-* 灵活性差
+* No installation required
+* Responds quickly
+* Has a strong foundation in 3D and spatial views
 
-### 家境-教育关系散点图
+
+**Disadvantages**
+
+* Not very refined
+* Poor flexibility
+  
+### Scatterplot of Family Wealth and Education Level
 
 ```{r scatterBasic, exercise=TRUE}
 plot(wvs7$incomeLevel, wvs7$education)
 
-## 添加装饰
+## add decoration
 ```
 
 ```{r scatterBasic-solution}
@@ -110,13 +110,14 @@ lines(lowess(wvs7$incomeLevel, wvs7$education, delta = 0.01 * diff(range(wvs7$ag
 ```
 
 
-### 保存输出
 
-* 兼容模式:`.jpg`, `.png`, `.wmf`, `.pdf`, `.bmp`, and `postscript`.
-* 过程:
-    1. 启用装置
-    2. 画图
-    3. 关闭装置
+### Save Output
+
+* Compatibility modes: `.jpg`, `.png`, `.wmf`, `.pdf`, `.bmp`, and `postscript`.
+* Process:
+    1. Enable the device
+    2. Drawing
+    3. Turn off the device
 
 ```{r saving, eval = FALSE}
 png("scatterBasic.png")
@@ -125,18 +126,19 @@ dev.off()
 ```
 
 * `ggsave(<plot project>, "<name + type>")`:
-    + 当省略`<plot project>`时，R将保存最后显示的图。
-    + 用户还可以使用其他参数来调整大小，路径，比例等。
+    + When `<plot project>` is omitted, R will save the last displayed plot.
+    + Users can also use other parameters to adjust size, path, scale, etc.
 
 ```{r save, eval = FALSE}
 ggsave("cfr.png")
 ```
 
 
-## `lattice`可视化
+## `lattice` Visualization
 
-`lattice`是印度统计学院副教授Deepayan Sarkar发展的作图工具，旨在将“trellis graph”作图理念带入R可视化，优化R build-in作图引擎。
-这个系列中，作图命令更加系统化，也拥有了更大的自由度：
+`lattice` is a plotting tool developed by Deepayan Sarkar, an associate professor at the Indian Statistical Institute, with the aim of bringing the "trellis graph" plotting concept into R visualization, optimizing R's built-in plotting engine.
+
+In this series, the plotting commands are more systematic and have greater flexibility:
 
 ```{r scatterLattice, exercise = TRUE}
 library(lattice)
@@ -170,8 +172,8 @@ xyplot(
 cloud(education ~ incomeLevel * religious, data = wvs7)
 ```
 
-### 现学现练
-请以国家为分组，画出教育程度与收入的散点图。
+### Learning by Doing
+Please group by country and plot a scatter plot of education level and income.
 ```{r scatterLattice_exercise, exercise=TRUE}
 
 ```
@@ -191,42 +193,45 @@ xyplot(
 ```
 
 
-## `ggplot2`可视化
+## `ggplot2` Visualization
 
-`ggplot2`引用了更加系统化的可视化理论，即Leland Wilkinson的*The Grammar of Graphics*，从底层逻辑上对R语言可视化进行了改革。
-现在这种可视化语法也成为了R语言领域最流行，发展也最迅速的可视化手段。
+`ggplot2` is a visualization package for R that applies a more systematic approach to visualization theory, based on Leland Wilkinson's *The Grammar of Graphics*. This approach fundamentally reformed the way R visualizations are created.
+
+Today, this visualization grammar has become the most popular and rapidly evolving visualization tool in the R language community.
+
 
 ```{r install, eval=FALSE}
 install.packages("ggplot2")
 library(ggplot2)
 ```
 
-### `ggplot`核心概念
+### Core Concepts of `ggplot`
 
-* `mapping`: 美观映射 (`aes`, `alpha`)---颜色, 形状, 大小等。
-    + 从一幅图中可以感知到的性质。
-    + 每一种美观性可以被映射到一个变量，或是被设置成一个常量。
-* `geom_*`: 几何对象---点, 线, 条等，用于规定数据的呈现方式。   
-  ![](images/ggplot_geom.png){width=100%}
+* `mapping`: Aesthetic mappings (`aes`, `alpha`)---color, shape, size, etc.
+    + Properties that can be perceived from a plot.
+    + Each aesthetic can be mapped to a variable or set as a constant.
+* `geom_*`: Geometric objects---points, lines, bars, etc., used to specify how data should be presented.   
+  ![](https://github.com/sammo3182/drhur/assets/114838968/5501a2a6-3a30-4047-9e7b-49db62d4997b){width=100%}
 
 
-### 万能模板
+### Universal Template
 
 ```{r basic, eval = FALSE}
-ggplot(data = <数据>) +
-  geom_<形状1>(
-    mapping = aes(x = <横轴变量>, y =  <纵轴变量>,
-                  color = <边框颜色>,
-                  fill = <填充颜色>,
-                  size  = <粗细大小>,
+ggplot(data = <data>) +
+  geom_<shape1>(
+    mapping = aes(x = <x-axis variable>, y =  <y-axis variable>,
+                  color = <border color>,
+                  fill = <fill color>,
+                  size  = <size>,
                   ......),
-    alpha  = <透明度，0--1>
+    alpha  = <transparency, 0--1>
   ) + 
-  geom_<形状2> + 
-  <标度、坐标系统、配色主题>... 
+  geom_<shape2> + 
+  <scale, coordinate system, color scheme>... 
+
 ```
 
-### 应用案例
+### Application Cases
 
 ```{r eg, echo=FALSE}
 # E.g. 1 ####
@@ -326,11 +331,11 @@ wvs7_agg2 %>%
 ```
 
 
-### 案例1
+### Case 1
 
-散点图：经济和文化因素对个体教育水平的影响
+Scatter plot: The impact of economic and cultural factors on individuals' education level
 
-> 要点：ggplot作图和我们常见的PS修图很像，先把基本图做出来，然后一层一层叠加滤镜效果。
+> Hint: The process of ggplot drawing is very similar to our common PS image retouching. The basic image is made first, and then the filter effect is superimposed layer by layer.
 
 ```{r scatterSteps, exercise = TRUE}
 wvs7_narm <-
@@ -342,6 +347,10 @@ ggplot(data = wvs7_narm,
 ```
 
 ```{r scatterSteps-solution}
+wvs7_narm <-
+  filter(wvs7,
+         if_all(c(incomeLevel, education, religious), ~ !is.na(.)))
+
 ggplot(data = wvs7_narm,
        aes(x = incomeLevel, y = education, color = religious)) +
     geom_point(size = 2, alpha = 0.3) +
@@ -357,11 +366,11 @@ ggplot(data = wvs7_narm,
 
 
 
-### 案例2
+### Case 2
 
-柱状图：经济对平均教育水平的影响在文化因素上的差异性
+Bar plot: The differential impact of the economy on average education levels across cultural factors.
 
-> 要点：每一种图形属性都有一个默认的标尺，在作图中标尺不仅可以用来改换比例，也可以用来更改颜色。
+> Hint: Each type of graphical property has a default scale, which can be used not only to change the ratio but also to change the color in plotting.
 
 ```{r barSteps, exercise = TRUE}
 wvs7_agg <- group_by(wvs7_narm, incomeLevel, religious) %>% 
@@ -407,11 +416,11 @@ ggplot(wvs7_agg, aes(x = incomeLevel, y = mean_ed, fill = religious)) +
 ```
 
 
-### 案例3
+### Case 3
 
-雷达图：家庭经济水平对个体机制信心的影响
+Radar Chart: The impact of household economic level on individual mechanism confidence
 
-> 要点：通过分面来凸显效果
+> Hint: Use facets to highlight the effect.
 
 ```{r radarSteps, exercise = TRUE}
 income_qnt <- quantile(wvs7$incomeLevel, seq(0, 1, .25), na.rm = TRUE)
@@ -502,14 +511,13 @@ wvs7_agg2 %>%
   
 ```
 
-### 案例4
+### Case 4
 
- 
-如果交叉分类得到许多个交叉组， 每组有一个数量需要展示， 用堆叠或者并排条形图可能过于复杂， 结果很难判读。
+If there are many cross-classifications resulting in numerous cross-groups, and each group has a quantity that needs to be displayed. Using stacked or bar graphs can be overly complex, making the results difficult to interpret.
 
-可以用x轴和y轴分别表示两种分类， 在坐标交叉处用色块颜色代表数量， 称为热力图。
+Instead, a heatmap can be used, where the x-axis and y-axis represent the two categories, and the quantity is represented by the color of the block at the intersection of the coordinates.
 
-比如，现在想看一下不同教育程度、收入程度的人对政府信任的平均水平
+Now use the heat map to show the average level of trust in the government by people with different levels of education and income.
 
 ```{r heatmap, exercise = TRUE}
 wvs7 %>%
@@ -534,25 +542,25 @@ p + geom_tile() +
 
 
 
-### 总结与补充
+### Summary and Supplement
 
-* `data`: 你想要可视化的数据
-* `aes`: 美学映射
-* `geoms`: 几何对象
+* `data`: the data you want to visualize
+* `aes`: aesthetic mapping
+* `geoms`: geometric objects
 * `labs`:
-    + `title, subtitle`: 标题
-    + `x, y`: 坐标轴标签
-    + `caption`: 注释
-* `theme`: 背景
-+ `scales`: 将数据与映射联系起来
-    + `facet`: 一个构面规范描述了如何将数据分解为集合
-    + `coord`: 一个描述数据坐标如何映射到图形平面的坐标系统
-+ `stats`: 统计转换
+    + `title, subtitle`: yitle
+    + `x, y`: axis labels
+    + `caption`: caption
+* `theme`: background
++ `scales`: connects data to mapping
+    + `facet`: a facet specification describes how to break up data into sets
+    + `coord`: a coordinate system that describes how data coordinates are mapped to the plane of the graphic
++ `stats`: statistical transformations
 
 
 
-## 最后的嘱咐
+## Final Tips
 
-1. 好看 &prop; 复杂性。
-1. 更酷炫不意味着更好。
+1. good-looking &prop; complexity
+1. Cooler graphics doesn't mean better.
 

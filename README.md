@@ -1,4 +1,6 @@
+pkgdown <img src="https://user-images.githubusercontent.com/58319029/109610431-b5fc7080-7b67-11eb-9bfb-988bd1759c50.png" width = "116.9" height = "135" align="right" />
 
+------------------------------------------------------------------------
 drhur
 =========
 
@@ -8,7 +10,7 @@ The tutorials included are crystallized during Dr. Hu's online and offline R wor
 To install:
 
 * the latest release version: `install.packages("drhur")`.
-+ the latest version: `remotes::install_github("sammo3182/drhur")`.
++ the latest version: `remotes::install_github("sammo3182/drhur", dependencies = TRUE, build_vignettes = TRUE)`.
 
 More details are available at here:
 

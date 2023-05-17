@@ -1,3 +1,11 @@
-# interplot 0.1.0
+# drhur 1.1.0
 
-The initial release. Three workshops are included.
+## New function
+
+- Added English versions for the released version
+
+## Bug fixed
+- Fixed the problem that causes the "play" chapter unable to be compiled in certain areas of the world.
+- Fixed the [issue](https://github.com/sammo3182/drhur/issues/15) caussed by `ggrader`
+- Revising the help file
+- Revised the vignette
